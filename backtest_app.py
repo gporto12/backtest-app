@@ -4,7 +4,7 @@ import plotly.express as px
 from datetime import date
 
 st.set_page_config(page_title="Backtest Inteligente", layout="wide")
-st.title("📊 Backtester de Estratégias Personalizadas")
+st.title("📊 Backtest de Estratégias Personalizadas")
 
 # Upload do CSV
 data_file = st.file_uploader("📁 Faça o upload do seu arquivo CSV com os dados históricos:", type=["csv"])
