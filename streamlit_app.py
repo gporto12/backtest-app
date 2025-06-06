@@ -3,9 +3,8 @@ import pandas as pd
 import plotly.express as px
 from datetime import date
 
-st.set_page_config(page_title="Backtest Inteligente", layout="wide")
+st.set_page_config(page_title="Backtest", layout="wide")
 
-# === ESTILO MODERNO ===
 st.markdown("""
     <style>
         body { background-color: #f0f2f6; }
@@ -25,32 +24,26 @@ st.markdown("""
 
 st.title("📊 Backtest de Estratégias Personalizadas")
 
-# === UPLOAD DO CSV ===
 data_file = st.file_uploader("📁 Faça o upload do seu arquivo CSV com os dados históricos:", type=["csv"])
 
 if data_file:
     df = pd.read_csv(data_file)
     st.success("✅ Arquivo carregado com sucesso!")
-
     st.subheader("🔍 Pré-visualização dos Dados")
     st.dataframe(df.head(), use_container_width=True)
 
-    # === GRÁFICO DE PREÇO ===
     if "datetime" in df.columns and "close" in df.columns:
         st.subheader("📈 Gráfico de Preço (Fechamento)")
         fig = px.line(df, x="datetime", y="close", title="Evolução do Preço", markers=True)
         st.plotly_chart(fig, use_container_width=True)
 
-    # === SELEÇÃO DE SETUP ===
     st.subheader("⚙️ Escolha o Setup para Backtest")
     setup = st.selectbox("Selecione o setup:", ["INVERT 50", "9-50-20", "PC"])
 
     if st.button("🚀 Executar Backtest"):
         st.info(f"Executando backtest com o setup: {setup}")
-
         if "setup" in df.columns:
             df_filtrado = df[df["setup"] == setup]
-
             total_trades = len(df_filtrado)
             wins = len(df_filtrado[df_filtrado["resultado"] == "win"]) if "resultado" in df_filtrado.columns else 0
             losses = len(df_filtrado[df_filtrado["resultado"] == "loss"]) if "resultado" in df_filtrado.columns else 0
@@ -67,7 +60,7 @@ if data_file:
             col4, col5 = st.columns(2)
             col4.metric("📊 R/R Médio", f"{rr:.2f}")
             if "data" in df_filtrado.columns:
-                col5.metric("📅 Período", f"{df_filtrado['data'].min()} até {df_filtrado['data'].max()}")
+                col5.metric("📅 Período Analisado", f"{df_filtrado['data'].min()} até {df_filtrado['data'].max()}")
 
             st.markdown("---")
             st.subheader("📋 Detalhes das Operações")
@@ -79,16 +72,14 @@ if data_file:
                 fig = px.bar(df_lucro_diario, x="data", y="lucro", title="Resultado Diário")
                 st.plotly_chart(fig, use_container_width=True)
 
-    # === DIÁRIO DE TRADE ===
     st.markdown("---")
     st.subheader("🗓️ Diário de Trade")
-
-    selected_date = st.date_input("Selecione uma data:", date.today())
+    selected_date = st.date_input("Selecione uma data para registrar observações:", date.today())
     note_key = f"note_{selected_date}"
-    note = st.text_area("Observações:", value=st.session_state.get(note_key, ""))
+    note = st.text_area("Observações para o dia selecionado:", value=st.session_state.get(note_key, ""))
 
-    categorias = st.multiselect("Categorias:", ["Setup", "Erro", "Emoção", "Mercado", "Outro"])
-    emoji = st.selectbox("Como se sentiu?", ["😃", "😐", "😓", "😡", "😴"])
+    categorias = st.multiselect("Categorias da observação:", ["Setup", "Erro", "Emoção", "Mercado", "Outro"])
+    emoji = st.selectbox("Como se sentiu hoje?", ["😃", "😐", "😓", "😡", "😴"])
 
     if st.button("💾 Salvar Observação"):
         st.session_state[note_key] = {"texto": note, "categorias": categorias, "emoji": emoji}
