@@ -23,7 +23,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("📊 Backtester de Estratégias Personalizadas")
+st.title("📊 Backtest de Estratégias Personalizadas")
 
 # === UPLOAD DO CSV ===
 data_file = st.file_uploader("📁 Faça o upload do seu arquivo CSV com os dados históricos:", type=["csv"])
