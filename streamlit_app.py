@@ -21,4 +21,4 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("📊 Backteste de Estratégias Personalizadas")
+st.title("📊 Backtest de Estratégias Personalizadas")
