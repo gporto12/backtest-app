@@ -93,7 +93,7 @@ if data_file:
 
     if note_key in st.session_state:
         saved = st.session_state[note_key]
-        st.info(f"{selected_date} | {', '.join(saved['categorias'])} {saved['emoji']}
+        st.info(f"📌 {selected_date} | {', '.join(saved['categorias'])} {saved['emoji']}\n\n{saved['texto']}")
 
 {saved['texto']}")
 else:
