@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Backtest com Gráfico Interativo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f9fb;
+            margin: 0;
+        }
+        header {
+            background-color: #1c2c40;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.4rem;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select {
+            padding: 0.5rem;
+            margin: 0 1rem 1rem 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+            margin-top: 1rem;
+        }
+        button {
+            padding: 0.5rem 1.5rem;
+            background-color: #1c2c40;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>Backtest com Gráfico Interativo</header>
+    <div class="container">
+        <form id="chartForm">
+            <label for="symbol">Ativo:</label>
+            <input type="text" id="symbol" list="ativos" placeholder="Ex: OANDA:XAUUSD" value="OANDA:XAUUSD">
+            <datalist id="ativos">
+                <option value="OANDA:XAUUSD">Gold</option>
+                <option value="OANDA:JP225USD">JP225</option>
+                <option value="OANDA:NAS100USD">USATEC</option>
+                <option value="FX:EURUSD">EUR/USD</option>
+                <option value="FX:AUDUSD">AUD/USD</option>
+                <option value="FX:USDCAD">USD/CAD</option>
+                <option value="FX:USDJPY">USD/JPY</option>
+                <option value="BINANCE:BTCUSDT">BTC</option>
+                <option value="OANDA:DE40EUR">GER40</option>
+                <option value="OANDA:UK100GBP">UK100</option>
+                <option value="OANDA:HK33HKD">HK50</option>
+                <option value="BMFBOVESPA:DOL1!">Dólar</option>
+                <option value="BMFBOVESPA:WIN1!">WINFUT</option>
+                <option value="TVC:UKOIL">UKOIL</option>
+                <option value="OANDA:SPX500USD">USA500</option>
+            </datalist>
+
+            <label for="interval">Tempo gráfico:</label>
+            <input type="number" id="interval" placeholder="Ex: 5 (minutos)" value="5">
+
+            <label for="strategy">Estratégia:</label>
+            <select id="strategy">
+                <option value="INVERT 50">INVERT 50</option>
+                <option value="9-50-20">9-50-20</option>
+                <option value="PC">PC</option>
+            </select>
+
+            <button type="submit">Aplicar</button>
+        </form>
+
+        <iframe id="tvWidget" src=""></iframe>
+    </div>
+
+    <script>
+        function loadChart(symbol, interval) {
+            const src = "https://s.tradingview.com/widgetembed/?symbol=" + encodeURIComponent(symbol) +
+                        "&interval=" + interval +
+                        "&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=[]&theme=light&style=1&timezone=Etc/UTC&locale=br";
+            document.getElementById("tvWidget").src = src;
+        }
+
+        document.getElementById("chartForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const symbol = document.getElementById("symbol").value;
+            const interval = document.getElementById("interval").value;
+            const strategy = document.getElementById("strategy").value;
+            console.log("Executar backtest:", { symbol, interval, strategy });
+            loadChart(symbol, interval);
+        });
+
+        window.onload = function() {
+            loadChart("OANDA:XAUUSD", 5);
+        }
+    </script>
+</body>
+</html>
