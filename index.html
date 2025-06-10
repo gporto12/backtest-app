@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Backtest App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ccc;
+        }
+        h1 { color: #333; }
+        label { display: block; margin-top: 1rem; }
+        input, select {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.2rem;
+        }
+        button {
+            background: #0077cc;
+            color: white;
+            padding: 0.6rem 1rem;
+            margin-top: 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #005fa3;
+        }
+        #resultado {
+            margin-top: 2rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Backtest de Estratégias com IA</h1>
+
+        <label for="ativo">Ativo:</label>
+        <input type="text" id="ativo" value="GER40">
+
+        <label for="timeframe">Timeframe:</label>
+        <select id="timeframe">
+            <option value="5m">5 minutos</option>
+            <option value="15m">15 minutos</option>
+            <option value="1h">1 hora</option>
+        </select>
+
+        <label for="dataInicio">Data inicial:</label>
+        <input type="date" id="dataInicio" value="2024-01-01">
+
+        <label for="dataFim">Data final:</label>
+        <input type="date" id="dataFim" value="2024-06-01">
+
+        <button onclick="rodarBacktest()">🚀 Rodar Backtest</button>
+
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        function rodarBacktest() {
+            const ativo = document.getElementById("ativo").value;
+            const timeframe = document.getElementById("timeframe").value;
+            const dataInicio = document.getElementById("dataInicio").value;
+            const dataFim = document.getElementById("dataFim").value;
+
+            document.getElementById("resultado").innerHTML = "⏳ Executando backtest...";
+
+            fetch("https://backtest-app-u9jdcs5gapaejpbr5vmlxf.streamlit.app/backtest", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    symbol: ativo,
+                    interval: timeframe,
+                    start_date: dataInicio,
+                    end_date: dataFim
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById("resultado").innerHTML = "❌ Erro: " + data.error;
+                } else {
+                    document.getElementById("resultado").innerHTML = `
+                        <h3>✅ Resultado</h3>
+                        <p><strong>Total de operações:</strong> ${data.total_trades}</p>
+                        <p><strong>Taxa de acerto:</strong> ${data.hit_rate}%</p>
+                        <p><strong>R/R médio:</strong> ${data.rr}</p>
+                        <p><strong>Lucro total:</strong> R$ ${data.lucro_total}</p>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error("Erro:", error);
+                document.getElementById("resultado").innerHTML = "❌ Erro ao conectar com o servidor.";
+            });
+        }
+    </script>
+</body>
+</html>
