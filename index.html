@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Backtest com IA e Gráfico Interativo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .form-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        #tv_chart_container {
+            height: 600px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <h4 class="text-center mb-4">📊 Backtest com IA e Gráfico Interativo</h4>
+    <div class="form-section row g-3 align-items-end">
+        <div class="col-md-3">
+            <label for="setup" class="form-label">Estratégia:</label>
+            <select id="setup" class="form-select">
+                <option>INVERT 50</option>
+                <option>9-50-20</option>
+                <option>PC</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label for="start-date" class="form-label">Data Inicial:</label>
+            <input type="date" id="start-date" class="form-control">
+        </div>
+        <div class="col-md-2">
+            <label for="end-date" class="form-label">Data Final:</label>
+            <input type="date" id="end-date" class="form-control">
+        </div>
+        <div class="col-md-2">
+            <label for="lotes" class="form-label">Lotes:</label>
+            <input type="number" id="lotes" class="form-control" min="1" value="1">
+        </div>
+        <div class="col-md-3 d-grid">
+            <button class="btn btn-primary" id="runBtn">🚀 Rodar Backtest</button>
+        </div>
+    </div>
+
+    <div id="result-box" class="form-section" style="display:none;">
+        <h5>✅ Resultado do Backtest</h5>
+        <ul>
+            <li><strong>Total de operações:</strong> <span id="total-trades"></span></li>
+            <li><strong>Taxa de acerto:</strong> <span id="accuracy"></span>%</li>
+            <li><strong>Lucro total:</strong> R$ <span id="total-profit"></span></li>
+            <li><strong>R/R médio:</strong> <span id="rr-average"></span></li>
+        </ul>
+    </div>
+
+    <div id="tv_chart_container"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://s3.tradingview.com/tv.js"></script>
+<script>
+    const runBtn = document.getElementById("runBtn");
+    runBtn.addEventListener("click", async () => {
+        const setup = document.getElementById("setup").value;
+        const start = document.getElementById("start-date").value;
+        const end = document.getElementById("end-date").value;
+        const lotes = parseInt(document.getElementById("lotes").value || "1");
+
+        if (!setup || !start || !end) {
+            alert("Por favor, preencha todos os campos.");
+            return;
+        }
+
+        try {
+            const res = await axios.post("https://backtest-api.onrender.com/backtest", {
+                ativo: "GER40",
+                timeframe: "5m",
+                setup,
+                data_inicial: start,
+                data_final: end,
+                lotes
+            });
+
+            const data = res.data;
+            document.getElementById("result-box").style.display = "block";
+            document.getElementById("total-trades").innerText = data.total_trades;
+            document.getElementById("accuracy").innerText = data.accuracy;
+            document.getElementById("total-profit").innerText = data.total_profit;
+            document.getElementById("rr-average").innerText = data.rr_average;
+        } catch (e) {
+            alert("Erro na conexão com a API.");
+        }
+    });
+
+    new TradingView.widget({
+        container_id: "tv_chart_container",
+        width: "100%",
+        height: 600,
+        symbol: "OANDA:GER40EUR",
+        interval: "5",
+        timezone: "Etc/UTC",
+        theme: "light",
+        style: "1",
+        locale: "br",
+        toolbar_bg: "#f1f3f6",
+        enable_publishing: false,
+        allow_symbol_change: true,
+        hide_side_toolbar: false,
+        studies: [],
+        withdateranges: true,
+        save_image: false,
+        details: true,
+        calendar: true
+    });
+</script>
+</body>
+</html>
