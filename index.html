@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Backtest com IA + Gráfico TradingView</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #1f2937;
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.5rem;
+    }
+    main {
+      padding: 2rem;
+      max-width: 1100px;
+      margin: auto;
+    }
+    .form-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    select, input {
+      padding: 0.5rem;
+      font-size: 1rem;
+      width: 100%;
+      max-width: 220px;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #tv-container {
+      margin-top: 2rem;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <header>📊 Backtest com IA e Gráfico Interativo</header>
+  <main>
+    <div class="form-group">
+      <div>
+        <label for="timeframe">Timeframe:</label>
+        <select id="timeframe">
+          <option>5 minutos</option>
+          <option>15 minutos</option>
+          <option>1 hora</option>
+          <option>1 dia</option>
+        </select>
+      </div>
+      <div>
+        <label for="estrategia">Estratégia:</label>
+        <select id="estrategia">
+          <option>INVERT 50</option>
+          <option>9-50-20</option>
+          <option>PC</option>
+          <option>Todos</option>
+        </select>
+      </div>
+      <div>
+        <label for="data-inicio">Data Inicial:</label>
+        <input type="date" id="data-inicio" />
+      </div>
+      <div>
+        <label for="data-fim">Data Final:</label>
+        <input type="date" id="data-fim" />
+      </div>
+      <div style="align-self: end;">
+        <button>🚀 Rodar Backtest</button>
+      </div>
+    </div>
+    <div id="tv-container"></div>
+  </main>
+
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+  <script>
+    new TradingView.widget({
+      autosize: true,
+      container_id: "tv-container",
+      interval: "5",
+      timezone: "Etc/UTC",
+      theme: "light",
+      style: "1",
+      locale: "br",
+      toolbar_bg: "#f1f3f6",
+      enable_publishing: false,
+      hide_side_toolbar: false,
+      allow_symbol_change: true,
+      hideideas: true,
+      withdateranges: true
+    });
+  </script>
+</body>
+</html>
